@@ -52,6 +52,39 @@ server.get('/api/users/:id', (req, res) => {
   });
 })
 
+// DELETE ********************************
+server.delete('/api/users/:id', (req, res) => {
+  const id = req.params.id;
+
+  db.remove(id).then(wasSuccessful => {
+    if(wasSuccessful) {
+      res.status(200).end();
+    } else {
+      res.status(404).json({ message: "The user with the specified ID does not exist." });
+    }
+  })
+  .catch(err => {
+    res.status(500).json({ error: "The user could not be removed" });
+  });
+})
+
+// PUT ***********************************
+server.put('/api/users/:id', (req, res) => {
+  const id = req.params.id;
+  const changes = req.body;
+
+  db.update(id, changes).then(updated => {
+    if(updated) {
+      res.status(200).json({ message: "The user was updated." });
+    } else {
+      res.status(404).json({ message: "The user with the specified ID does not exist." });
+    }
+  })
+  .catch(err => {
+    res.status(500).json({ error: "The user information could not be modified." });
+  });
+})
+
 // watch for connections on port 5000
 server.listen(5000, () => 
   console.log('Server running on http://localhost:5000')
